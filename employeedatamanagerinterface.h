@@ -23,7 +23,7 @@ public:
      * @param fileName - name of the file, where dump should be stored.
      * @return true, if writing was successfull, otherwize - false
      */
-    virtual bool writeToFile(QList<EmployeeItem*> roots, const QString& fileName) = 0;
+    virtual bool writeToFile(const QList<EmployeeItem*>& roots, const QString& fileName) = 0;
 };
 
 #endif // EMPLOYEEDATAMANAGERINTERFACE_H

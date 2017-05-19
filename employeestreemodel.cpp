@@ -80,3 +80,13 @@ bool EmployeesTreeModel::removeRows(int row, int count, const QModelIndex& paren
 {
     return false;
 }
+
+
+
+// ----------------------------------------------------------------
+void EmployeesTreeModel::setRoots(QList<EmployeeItem*> roots)
+{
+    beginResetModel();
+    _roots = roots;
+    endResetModel();
+}

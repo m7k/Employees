@@ -121,7 +121,7 @@ QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileNam
 
 
 // ----------------------------------------------------------------
-bool EmployeeDataManagerXml::writeToFile(QList<EmployeeItem*> roots, const QString &fileName)
+bool EmployeeDataManagerXml::writeToFile(const QList<EmployeeItem*>& roots, const QString &fileName)
 {
     QFile file(fileName);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))

@@ -32,9 +32,10 @@ public:
     virtual bool removeRows(int row, int count, const QModelIndex& parent) override;
 
     // Custom functions
+    void setRoots(QList<EmployeeItem*> roots);
 
 private:
-    EmployeeItem* root;
+    QList<EmployeeItem*> _roots;
 };
 
 #endif // EMPLOYEESTREEMODEL_H

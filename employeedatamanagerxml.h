@@ -26,7 +26,7 @@ public:
      * @param fileName - if filename doesn't exist - it will be created. If exists - overriden
      * @return true on success, false otherwize
      */
-    virtual bool writeToFile(QList<EmployeeItem*> roots, const QString &fileName) override;
+    virtual bool writeToFile(const QList<EmployeeItem*>& roots, const QString &fileName) override;
 
 private:
     /**
