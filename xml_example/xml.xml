@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Employees>
+    <Employee name="1_name" surname="1_surname" patronymic="1_patronymic" appointment="1_appointment" birthdate="">
+        <Subordinates>
+            <Employee name="1.1_name" surname="1.1_surname" patronymic="1.1_patronymic" appointment="1.1_appointment" birthdate=""/>
+            <Employee name="1.2_name" surname="1.2_surname" patronymic="1.2_patronymic" appointment="1.2_appointment" birthdate=""/>
+        </Subordinates>
+    </Employee>
+    <Employee name="2_name" surname="2_surname" patronymic="2_patronymic" appointment="2" birthdate=""/>
+    <Employee name="3_name" surname="3_surname" patronymic="3_patronymic" appointment="3" birthdate=""/>
+</Employees>
