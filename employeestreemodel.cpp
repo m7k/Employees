@@ -84,7 +84,7 @@ bool EmployeesTreeModel::removeRows(int row, int count, const QModelIndex& paren
 
 
 // ----------------------------------------------------------------
-void EmployeesTreeModel::setRoots(QList<EmployeeItem*> roots)
+void EmployeesTreeModel::setRoots(const QList<QSharedPointer<EmployeeTreeItem> >& roots)
 {
     beginResetModel();
     _roots = roots;

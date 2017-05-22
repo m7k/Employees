@@ -12,11 +12,9 @@ int main(int argc, char *argv[])
  #if 0  // Example of current testing
         // xml to read should placed in QApp working directory
     EmployeeDataManagerXml rdr;
-    auto roots = rdr.readFromFile("xml.xml");
+    auto roots = rdr.readFromSource("xml.xml");
 
-    rdr.writeToFile(roots, "xml2.xml");
-    for(auto r : roots)
-        delete r;
+    rdr.writeToSource(roots, "xml2.xml");
 #endif
 
     return a.exec();

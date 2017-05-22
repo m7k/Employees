@@ -7,19 +7,19 @@
 
 
 // ----------------------------------------------------------------
-QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileName)
+QList<QSharedPointer<EmployeeTreeItem> > EmployeeDataManagerXml::readFromSource(const QString& address)
 {
-    QFile file(fileName);
+    QFile file(address);
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        return QList<EmployeeItem*>();
+        return QList<QSharedPointer<EmployeeTreeItem>>();
     }
 
     QXmlStreamReader reader(&file);
 
-    EmployeeItem* currentEmployee = nullptr;
-    QList<EmployeeItem*> roots;
-    QStack<EmployeeItem*> chiefsStack;
+    QSharedPointer<EmployeeTreeItem> currEmployeeItem;
+    QList<QSharedPointer<EmployeeTreeItem>> roots;
+    QStack<QSharedPointer<EmployeeTreeItem>> chiefsStack;
 
     while(!reader.atEnd() && !reader.hasError())
     {
@@ -32,7 +32,7 @@ QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileNam
             if(reader.name() == EMPLOYEES_BLOCK_TAG)
             {
                 // we only start parsing, current employee should be empty, as well as chiefs stack
-                Q_ASSERT(!currentEmployee && !chiefsStack.size() && "Current employee should be nullprt atm");
+                Q_ASSERT(currEmployeeItem.isNull() && !chiefsStack.size() && "Current employee should be nullprt atm");
                 continue;
             }
 
@@ -41,30 +41,33 @@ QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileNam
                 /* new employee upcoming. need to create it usig approriate chief and
                      * parse it's attributes
                      */
+                currEmployeeItem = QSharedPointer<EmployeeTreeItem>(new EmployeeTreeItem());
                 if(chiefsStack.size())
-                    currentEmployee = new EmployeeItem(chiefsStack.top());
+                {
+                    chiefsStack.top()->subordinates.append(currEmployeeItem);
+                    currEmployeeItem->chief = chiefsStack.top();
+                }
                 else
                 {
-                    currentEmployee = new EmployeeItem();
-                    roots.append(currentEmployee);
+                    roots.append(currEmployeeItem);
                 }
 
                 QXmlStreamAttributes attrs = reader.attributes();
                 if(attrs.hasAttribute(NAME_ATTR))
                 {
-                    currentEmployee->setName(attrs.value(NAME_ATTR).toString());
+                    currEmployeeItem->employee->name = attrs.value(NAME_ATTR).toString();
                 }
                 if(attrs.hasAttribute(SURNAME_ATTR))
                 {
-                    currentEmployee->setSurname(attrs.value(SURNAME_ATTR).toString());
+                    currEmployeeItem->employee->surname = attrs.value(SURNAME_ATTR).toString();
                 }
                 if(attrs.hasAttribute(PATRONYMIC_ATTR))
                 {
-                    currentEmployee->setPatronymic(attrs.value(PATRONYMIC_ATTR).toString());
+                    currEmployeeItem->employee->patronymic = attrs.value(PATRONYMIC_ATTR).toString();
                 }
                 if(attrs.hasAttribute(APPOINTMENT_ATTR))
                 {
-                    currentEmployee->setAppointment(attrs.value(APPOINTMENT_ATTR).toString());
+                    currEmployeeItem->employee->appointment = attrs.value(APPOINTMENT_ATTR).toString();
                 }
                 if(attrs.hasAttribute(BIRTHDATE_ATTR))
                 {
@@ -79,8 +82,8 @@ QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileNam
                 /* If subordinate block is found, we need to cache current employee for future
                      * (we can't know for sure, if it's subordinates are regular employees or chiefs itself)
                     */
-                Q_ASSERT(currentEmployee && "Current employee can't be nullptr atm");
-                chiefsStack.push(currentEmployee);
+                Q_ASSERT(!currEmployeeItem.isNull() && "Current employee can't be nullptr atm");
+                chiefsStack.push(currEmployeeItem);
                 continue;
             }
         }
@@ -120,10 +123,11 @@ QList<EmployeeItem*> EmployeeDataManagerXml::readFromFile(const QString &fileNam
 
 
 
+
 // ----------------------------------------------------------------
-bool EmployeeDataManagerXml::writeToFile(const QList<EmployeeItem*>& roots, const QString &fileName)
+bool EmployeeDataManagerXml::writeToSource(const QList<QSharedPointer<EmployeeTreeItem> >& roots, const QString& address)
 {
-    QFile file(fileName);
+    QFile file(address);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
     {
         qDebug() << "Error openning/creating file for writing";
@@ -150,25 +154,25 @@ bool EmployeeDataManagerXml::writeToFile(const QList<EmployeeItem*>& roots, cons
 
 
 // ----------------------------------------------------------------
-void EmployeeDataManagerXml::_writeEmployee(QXmlStreamWriter& writer, EmployeeItem* employee)
+void EmployeeDataManagerXml::_writeEmployee(QXmlStreamWriter& writer, QSharedPointer<EmployeeTreeItem> employeeItem)
 {
     /// ToDo: think about: if employee is nullptr, should we dump empty employee or not?
     writer.writeStartElement(EMPLOYEE_TAG);
-    if(employee)
+    if(employeeItem)
     {
         // if employee isn't nullptr, we can parse it's attributes and subordinates
-        writer.writeAttribute(NAME_ATTR, employee->name());
-        writer.writeAttribute(SURNAME_ATTR, employee->surname());
-        writer.writeAttribute(PATRONYMIC_ATTR, employee->patronymic());
-        writer.writeAttribute(APPOINTMENT_ATTR, employee->appointment());
+        writer.writeAttribute(NAME_ATTR, employeeItem->employee->name);
+        writer.writeAttribute(SURNAME_ATTR, employeeItem->employee->surname);
+        writer.writeAttribute(PATRONYMIC_ATTR, employeeItem->employee->patronymic);
+        writer.writeAttribute(APPOINTMENT_ATTR, employeeItem->employee->appointment);
         /// ToDo: atm format isn't chosen, so can't convert birthdate from QDate to QString, writing empty string atm
-        writer.writeAttribute(BIRTHDATE_ATTR, QString(""));
+        writer.writeAttribute(BIRTHDATE_ATTR, QString("") /* employeeItem->employee->birthDate */);
 
         // Parsing employee's subordinates recursively
-        if(employee->subordinates().size())
+        if(employeeItem->subordinates.size())
         {
             writer.writeStartElement(SUBORDINATES_BLOCK_TAG);
-            for(auto sub : employee->subordinates())
+            for(auto sub : employeeItem->subordinates)
             {
                 _writeEmployee(writer, sub);
             }
@@ -178,3 +182,5 @@ void EmployeeDataManagerXml::_writeEmployee(QXmlStreamWriter& writer, EmployeeIt
 
     writer.writeEndElement();
 }
+
+

@@ -5,55 +5,41 @@
 #include <QList>
 #include <QDate>
 #include <QDebug>
+#define QT_SHAREDPOINTER_TRACK_POINTERS
+#include <QSharedPointer>
+#include <QWeakPointer>
 
 
 /**
- * @brief The EmployeeItem class. Contains info about emplyee: name, surname, patronymic, appointment and birthdate.
- * Also contains info about employee's chief and subordinates (used for building employees hierarchy tree)
+ * @brief The Employee struct - contains all info about employee. POD class.
  */
-class EmployeeItem
+struct Employee
 {
-public:
-    explicit EmployeeItem();
-    explicit EmployeeItem(EmployeeItem* chief);
-    ~EmployeeItem();
-
-    // Getters and setters block
-    QString name() const { return _name; }
-    QString surname() const { return _surname; }
-    QString patronymic() const { return _patronymic; }
-    QString appointment() const { return _appointment; }
-    QDate   birthDate() const { return _birthdate; }
-
-    void setName(const QString& name) { _name = name; }
-    void setSurname(const QString& surname) { _surname = surname; }
-    void setPatronymic(const QString& patronymic) { _patronymic = patronymic; }
-    void setAppointment(const QString& appointment) { _appointment = appointment; }
-    void setBirthDate(const QDate& birthdate) { _birthdate = birthdate; }
-
-    const EmployeeItem* chief() const { return _chief; }
-    QList<EmployeeItem*> subordinates() const { return _subordinates; }
-
-    // Custom functions. Will be used in model for employees
-    int rowForSubordinate(const EmployeeItem* employee) const;
-    EmployeeItem* subordinate(const int pos) const;
-
-
-    void appendSubordinate(EmployeeItem* employee);
-    void insertSubordinate(const int pos, EmployeeItem* employee);
-    EmployeeItem* removeSubordinate(const int pos);
-
-private:
-    QString _name;
-    QString _surname;
-    QString _patronymic;
-    QString _appointment;
-    QDate   _birthdate;
-
-    EmployeeItem*           _chief;
-    QList<EmployeeItem*>    _subordinates;
+    QString name;
+    QString surname;
+    QString patronymic;
+    QString appointment;
+    QDate   birthdate;
 };
 
-QDebug operator<<(QDebug d, EmployeeItem* employee);
+
+
+/**
+ * @brief The EmployeeTreeItem class.
+ * Contains pointer to Employee struct (unique to prevent copying) and additional info, used in hierarchy tree:
+ * list of subordinates (can be empty) and a weak pointer to employee's chief.
+ */
+class EmployeeTreeItem
+{
+public:
+    EmployeeTreeItem();
+
+    QScopedPointer<Employee> employee;
+
+    QWeakPointer<EmployeeTreeItem> chief;
+    QList<QSharedPointer<EmployeeTreeItem>> subordinates;
+};
+
+QDebug operator<<(QDebug d, EmployeeTreeItem* employeeItem);
 
 #endif // EMPLOYEEITEM_H
