@@ -36,6 +36,9 @@ public:
 
 private:
     QList<QSharedPointer<EmployeeTreeItem>> _roots;
+
+    EmployeeTreeItem* _itemByIndex(const QModelIndex& index) const;
+//    int _rowForItem(EmployeeTreeItem* item, Employee)
 };
 
 #endif // EMPLOYEESTREEMODEL_H

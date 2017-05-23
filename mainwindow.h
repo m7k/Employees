@@ -4,8 +4,9 @@
 #include <QMainWindow>
 #include <QFileDialog>
 
+class EmployeesTreeModel;
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -18,6 +19,7 @@ public:
 
 private:
     Ui::MainWindow* _ui;
+    EmployeesTreeModel* _model;
 
     void _init();
 };

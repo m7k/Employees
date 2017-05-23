@@ -5,7 +5,6 @@
 #include <QList>
 #include <QDate>
 #include <QDebug>
-#define QT_SHAREDPOINTER_TRACK_POINTERS
 #include <QSharedPointer>
 #include <QWeakPointer>
 
@@ -33,11 +32,16 @@ class EmployeeTreeItem
 {
 public:
     EmployeeTreeItem();
+    EmployeeTreeItem(const EmployeeTreeItem&) = delete;
+    ~EmployeeTreeItem(){ qDebug() << "~Item"; }
 
     QScopedPointer<Employee> employee;
 
     QWeakPointer<EmployeeTreeItem> chief;
     QList<QSharedPointer<EmployeeTreeItem>> subordinates;
+
+private:
+    EmployeeTreeItem& operator=(const EmployeeTreeItem&);
 };
 
 QDebug operator<<(QDebug d, EmployeeTreeItem* employeeItem);

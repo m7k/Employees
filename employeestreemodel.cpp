@@ -14,7 +14,9 @@ EmployeesTreeModel::EmployeesTreeModel(QObject* parent /*= nullptr*/)
 // ----------------------------------------------------------------
 int EmployeesTreeModel::rowCount(const QModelIndex& parent) const
 {
-    return 0;
+    auto parentItem = _itemByIndex(parent);
+
+    return ((parentItem) ? (parentItem->subordinates.size()) : (_roots.size()));
 }
 
 
@@ -22,7 +24,7 @@ int EmployeesTreeModel::rowCount(const QModelIndex& parent) const
 // ----------------------------------------------------------------
 int EmployeesTreeModel::columnCount(const QModelIndex& parent) const
 {
-    return 0;
+    return 1;
 }
 
 
@@ -30,7 +32,13 @@ int EmployeesTreeModel::columnCount(const QModelIndex& parent) const
 // ----------------------------------------------------------------
 QModelIndex EmployeesTreeModel::index(int row, int column, const QModelIndex& parent) const
 {
-    return QModelIndex();
+    if(!hasIndex(row, column, parent))
+        return QModelIndex();
+
+    auto parentItem = _itemByIndex(parent);
+
+
+    return createIndex(row, column, ((parentItem) ? (parentItem->subordinates.at(row).data()) : (_roots.at(row).data())) );
 }
 
 
@@ -38,7 +46,32 @@ QModelIndex EmployeesTreeModel::index(int row, int column, const QModelIndex& pa
 // ----------------------------------------------------------------
 QModelIndex EmployeesTreeModel::parent(const QModelIndex& child) const
 {
-    return QModelIndex();
+    if(!child.isValid())
+        return QModelIndex();
+
+    auto currItem = static_cast<EmployeeTreeItem*>(child.internalPointer());
+    auto chiefRef = currItem->chief.toStrongRef();
+
+    if(!chiefRef)
+        return QModelIndex();
+
+    auto chiefsChiefRef = chiefRef->chief.toStrongRef();
+
+    int parentRow = 0;
+
+    if(chiefsChiefRef)
+    {
+        for(int i = 0; i < chiefsChiefRef->subordinates.size(); i++)
+        {
+            if(chiefsChiefRef->subordinates.at(i).data() == chiefRef.data())
+            {
+                parentRow = i;
+                break;
+            }
+        }
+    }
+
+    return createIndex(parentRow, 0, chiefRef.data());
 }
 
 
@@ -46,14 +79,27 @@ QModelIndex EmployeesTreeModel::parent(const QModelIndex& child) const
 // ----------------------------------------------------------------
 Qt::ItemFlags EmployeesTreeModel::flags(const QModelIndex& index) const
 {
-    return Qt::ItemIsEnabled;
+    if(!index.isValid())
+        return Qt::ItemIsEnabled;
+
+    return (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 }
 
 
 
 // ----------------------------------------------------------------
-QVariant EmployeesTreeModel::data(const QModelIndex& index, int role) const
+QVariant EmployeesTreeModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
+    if(!index.isValid())
+        return QVariant();
+
+    auto item = static_cast<EmployeeTreeItem*>(index.internalPointer());
+
+    if(role == Qt::DisplayRole)
+    {
+        return item->employee->name;
+    }
+
     return QVariant();
 }
 
@@ -89,4 +135,15 @@ void EmployeesTreeModel::setRoots(const QList<QSharedPointer<EmployeeTreeItem> >
     beginResetModel();
     _roots = roots;
     endResetModel();
+}
+
+
+
+// ----------------------------------------------------------------
+EmployeeTreeItem* EmployeesTreeModel::_itemByIndex(const QModelIndex& index) const
+{
+    if(!index.isValid())
+        return nullptr;
+
+    return static_cast<EmployeeTreeItem*>(index.internalPointer());
 }
