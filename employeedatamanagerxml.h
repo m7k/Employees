@@ -18,7 +18,7 @@ public:
      * @param fileName - if file doesn't exist, empty list will be returned
      * @return - if any errors occur while parsing, list might be incomplete
      */
-    virtual QList<QSharedPointer<EmployeeTreeItem>> readFromSource(const QString& address) override;
+    QList<QSharedPointer<EmployeeTreeItem>> readFromSource(const QString& address) override;
 
     /**
      * @brief writeToFile - implementation of interface's method
@@ -26,7 +26,7 @@ public:
      * @param fileName - if filename doesn't exist - it will be created. If exists - overriden
      * @return true on success, false otherwize
      */
-    virtual bool writeToSource(const QList<QSharedPointer<EmployeeTreeItem>>& roots, const QString& address) override;
+    bool writeToSource(const QList<QSharedPointer<EmployeeTreeItem>>& roots, const QString& address) override;
 
 private:
     /**
