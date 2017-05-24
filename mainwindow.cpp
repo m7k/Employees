@@ -87,12 +87,6 @@ void MainWindow::_init()
 {
     _ui->setupUi(this);
 
-//#if 0 //TEST
-    EmployeeDataManagerXml rdr;
-    auto roots = rdr.readFromSource("xml.xml");
-    _model->setRoots(roots);
-//#endif
-
     _ui->employeesTreeView->setAcceptDrops(true);
     _ui->employeesTreeView->setModel(_model);
 
@@ -113,7 +107,6 @@ void MainWindow::_init()
             return;
         _xmlManager->writeToSource(_model->getRoots(), _lastOpennedFile);
     }));
-
 }
 
 
