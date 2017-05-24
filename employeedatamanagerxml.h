@@ -35,6 +35,18 @@ private:
      * @param employee - employee we're need to dump
      */
     void _writeEmployee(QXmlStreamWriter& writer, QSharedPointer<EmployeeTreeItem> employeeItem);
+
+    // Static Constants, used for parsing. Can be moved to public, if will be needed outside this class
+    static const QString EMPLOYEES_BLOCK_TAG;
+    static const QString EMPLOYEE_TAG;
+    static const QString SUBORDINATES_BLOCK_TAG;
+
+    static const QString NAME_ATTR;
+    static const QString SURNAME_ATTR;
+    static const QString PATRONYMIC_ATTR;
+    static const QString APPOINTMENT_ATTR;
+    static const QString BIRTHDATE_ATTR;
+    static const QString DATE_FORMAT;
 };
 
 #endif // EMPLOYEEDATAMANAGERXML_H

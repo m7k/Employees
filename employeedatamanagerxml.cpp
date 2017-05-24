@@ -3,7 +3,19 @@
 #include <QFile>
 #include <QStack>
 
-#include "defines.h"
+
+// static consts initialization
+const QString EmployeeDataManagerXml::EMPLOYEES_BLOCK_TAG       ("Employees");
+const QString EmployeeDataManagerXml::EMPLOYEE_TAG              ("Employee");
+const QString EmployeeDataManagerXml::SUBORDINATES_BLOCK_TAG    ("Subordinates");
+
+const QString EmployeeDataManagerXml::NAME_ATTR                 ("name");
+const QString EmployeeDataManagerXml::SURNAME_ATTR              ("surname");
+const QString EmployeeDataManagerXml::PATRONYMIC_ATTR           ("patronymic");
+const QString EmployeeDataManagerXml::APPOINTMENT_ATTR          ("appointment");
+const QString EmployeeDataManagerXml::BIRTHDATE_ATTR            ("birthdate");
+
+const QString EmployeeDataManagerXml::DATE_FORMAT               ("dd.MM.yyyy");
 
 
 // ----------------------------------------------------------------
@@ -29,7 +41,7 @@ QList<QSharedPointer<EmployeeTreeItem> > EmployeeDataManagerXml::readFromSource(
 
         if(token == QXmlStreamReader::StartElement)
         {
-            if(reader.name() == EMPLOYEES_BLOCK_TAG)
+            if(reader.name() == EmployeeDataManagerXml::EMPLOYEES_BLOCK_TAG)
             {
                 // we only start parsing, current employee should be empty, as well as chiefs stack
                 Q_ASSERT(currEmployeeItem.isNull() && !chiefsStack.size() && "Current employee should be nullprt atm");
@@ -71,7 +83,7 @@ QList<QSharedPointer<EmployeeTreeItem> > EmployeeDataManagerXml::readFromSource(
                 }
                 if(attrs.hasAttribute(BIRTHDATE_ATTR))
                 {
-                    /// ToDo: when format will be selected, here should be written converting from string to date
+                    currEmployeeItem->employee->birthdate = QDate::fromString(attrs.value(BIRTHDATE_ATTR).toString(), DATE_FORMAT);
                 }
                 continue;
             }
@@ -165,8 +177,7 @@ void EmployeeDataManagerXml::_writeEmployee(QXmlStreamWriter& writer, QSharedPoi
         writer.writeAttribute(SURNAME_ATTR, employeeItem->employee->surname);
         writer.writeAttribute(PATRONYMIC_ATTR, employeeItem->employee->patronymic);
         writer.writeAttribute(APPOINTMENT_ATTR, employeeItem->employee->appointment);
-        /// ToDo: atm format isn't chosen, so can't convert birthdate from QDate to QString, writing empty string atm
-        writer.writeAttribute(BIRTHDATE_ATTR, QString("") /* employeeItem->employee->birthDate */);
+        writer.writeAttribute(BIRTHDATE_ATTR, employeeItem->employee->birthdate.toString(DATE_FORMAT));
 
         // Parsing employee's subordinates recursively
         if(employeeItem->subordinates.size())

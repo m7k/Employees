@@ -24,7 +24,6 @@ HEADERS  += mainwindow.h \
     employeeitem.h \
     employeedatamanagerinterface.h \
     employeedatamanagerxml.h \
-    employeestreemodel.h \
-    defines.h
+    employeestreemodel.h
 
 FORMS    += mainwindow.ui
