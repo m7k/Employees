@@ -14,11 +14,11 @@
  */
 struct Employee
 {
-    QString name;
-    QString surname;
-    QString patronymic;
-    QString appointment;
-    QDate   birthdate;
+    QString name = QObject::tr("[not_set]");
+    QString surname = QObject::tr("[not_set]");
+    QString patronymic = QObject::tr("[not_set]");
+    QString appointment = QObject::tr("[not_set]");
+    QDate   birthdate = QDate(2000, 01, 01);
 };
 
 
@@ -32,16 +32,14 @@ class EmployeeTreeItem
 {
 public:
     EmployeeTreeItem();
-    EmployeeTreeItem(const EmployeeTreeItem&) = delete;
-    ~EmployeeTreeItem(){ qDebug() << "~Item"; }
 
     QScopedPointer<Employee> employee;
 
     QWeakPointer<EmployeeTreeItem> chief;
     QList<QSharedPointer<EmployeeTreeItem>> subordinates;
 
-private:
-    EmployeeTreeItem& operator=(const EmployeeTreeItem&);
+    EmployeeTreeItem(const EmployeeTreeItem&) = delete;
+    EmployeeTreeItem& operator=(const EmployeeTreeItem&) = delete;
 };
 
 QDebug operator<<(QDebug d, EmployeeTreeItem* employeeItem);
