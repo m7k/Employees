@@ -42,6 +42,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QMimeData* mimeData(const QModelIndexList& indexes) const override;
 

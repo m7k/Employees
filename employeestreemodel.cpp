@@ -118,6 +118,42 @@ QStringList EmployeesTreeModel::mimeTypes() const
 
 
 // ----------------------------------------------------------------
+QVariant EmployeesTreeModel::headerData(int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/) const
+{
+    if(role != Qt::DisplayRole)
+        return QVariant();
+
+    if(orientation == Qt::Horizontal)
+    {
+        switch(section)
+        {
+            case Column::Name:
+                return tr("[name]");
+                break;
+            case Column::Surname:
+                return tr("[surname]");
+                break;
+            case Column::Patronymic:
+                return tr("[patronymic]");
+                break;
+            case Column::Appointment:
+                return tr("[appointment]");
+                break;
+            case Column::Birthdate:
+                return tr("[birthdate]");
+                break;
+            default:
+                return QVariant();
+                break;
+        }
+    }
+
+    return QVariant();
+}
+
+
+
+// ----------------------------------------------------------------
 QVariant EmployeesTreeModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
     if(!index.isValid())
