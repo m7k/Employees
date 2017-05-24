@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,14 +20,21 @@
       <item>
        <widget class="QPushButton" name="openBtn">
         <property name="text">
-         <string>[open_file]</string>
+         <string>[open]</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="saveBtn">
         <property name="text">
-         <string>[save_file_as]</string>
+         <string>[save]</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="saveAsBtn">
+        <property name="text">
+         <string>[save_as]</string>
         </property>
        </widget>
       </item>
@@ -47,7 +54,17 @@
      </layout>
     </item>
     <item>
-     <widget class="QTreeView" name="employeesTreeView"/>
+     <widget class="QTreeView" name="employeesTreeView">
+      <property name="dragEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="dragDropMode">
+       <enum>QAbstractItemView::DragDrop</enum>
+      </property>
+      <property name="defaultDropAction">
+       <enum>Qt::MoveAction</enum>
+      </property>
+     </widget>
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -62,13 +79,6 @@
        <widget class="QPushButton" name="removeEmployeeBtn">
         <property name="text">
          <string>[remove_employee]</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="editEmployee">
-        <property name="text">
-         <string>[edit_employee]</string>
         </property>
        </widget>
       </item>
