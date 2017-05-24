@@ -14,16 +14,16 @@ public:
     EmployeeDataManagerXml(){}
 
     /**
-     * @brief readFromFile - implementation of interface's method
-     * @param fileName - if file doesn't exist, empty list will be returned
+     * @brief readFromSource - implementation of interface's method
+     * @param address - if file, accessible by path=address, doesn't exist, empty list will be returned
      * @return - if any errors occur while parsing, list might be incomplete
      */
     QList<QSharedPointer<EmployeeTreeItem>> readFromSource(const QString& address) override;
 
     /**
-     * @brief writeToFile - implementation of interface's method
+     * @brief writeToSource - implementation of interface's method
      * @param roots - list with elements to dump
-     * @param fileName - if filename doesn't exist - it will be created. If exists - overriden
+     * @param address - if filename, accessible by path=address,  doesn't exist - it will be created. If exists - overriden
      * @return true on success, false otherwize
      */
     bool writeToSource(const QList<QSharedPointer<EmployeeTreeItem>>& roots, const QString& address) override;

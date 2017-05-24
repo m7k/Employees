@@ -11,16 +11,16 @@ public:
     virtual ~EmployeeDataManagerInterface(){}
 
     /**
-     * @brief readFromFile - used to read employees info from file with expected format.
-     * @param fileName - name of the file to read. It should exist, otherwize empty list will be returned
+     * @brief readFromSource - used to read employees info from source, accessed by address.
+     * @param address - address to access the source. In case of DB, it can be connection string.
      * @return QList<EmployeeItem*> - list with items. If any errors occur, list can be incomplete
      */
     virtual QList<QSharedPointer<EmployeeTreeItem>> readFromSource(const QString& address) = 0;
 
     /**
-     * @brief writeToFile - used to dump list of employees to file with format, specified in child classes
+     * @brief writeToSource - used to dump list of employees to source.
      * @param roots - list with items to dump
-     * @param fileName - name of the file, where dump should be stored.
+     * @param address - address of the source, where dump should be stored.
      * @return true, if writing was successfull, otherwize - false
      */
     virtual bool writeToSource(const QList<QSharedPointer<EmployeeTreeItem>>& roots, const QString& address) = 0;
